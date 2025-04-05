@@ -163,10 +163,10 @@ export default function Battle(props: { threadId: string }) {
   return (
     <div className="flex flex-col h-screen">
       <div className="w-full flex flex-col md:flex-row flex-1 overflow-hidden">
-        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-0">
+        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-1 relative">
           <CardsChat messages={messagesLeft} title="模型 A" />
         </div>
-        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-0">
+        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-1 relative">
           <CardsChat messages={messagesRight} title="模型 B" />
         </div>
       </div>

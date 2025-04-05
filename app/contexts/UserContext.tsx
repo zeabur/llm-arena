@@ -6,6 +6,7 @@ export interface User {
 	_id: string;
 	username: string;
 	avatar: string;
+	hasAgreedToTerms?: boolean;
 }
 
 export const UserContext = createContext<User | null>(null);

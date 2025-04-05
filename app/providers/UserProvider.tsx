@@ -4,12 +4,13 @@ import { ReactNode } from 'react';
 import { UserContext } from '../contexts/UserContext';
 
 interface UserProviderProps {
-	user: {
+	readonly user: {
 		_id: string;
 		username: string;
 		avatar: string;
+		hasAgreedToTerms?: boolean;
 	}
-	children: ReactNode;
+	readonly children: ReactNode;
 }
 
 export function UserProvider({ user, children }: UserProviderProps) {
