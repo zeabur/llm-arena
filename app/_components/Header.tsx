@@ -6,7 +6,7 @@ import logo from '@/app/logo.webp';
 
 export default function Header() {
   return (
-    <header className="w-full py-4 border-b bg-white">
+    <header className="w-full py-2 border-b bg-white">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 text-sm text-gray-500">
           <div className="flex gap-4 items-center">

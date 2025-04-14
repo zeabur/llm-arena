@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import TermsOfService from '@/app/markdown/20250319-使用者條款-v1.3.mdx';
 import PrivacyPolicy from '@/app/markdown/20250305-隱私權政策-v1.6.mdx';
 import { useUser } from '@/app/contexts/UserContext';
+import { Checkbox } from '@/components/ui/checkbox';
 
 export default function AgreementModal() {
   const [open, setOpen] = useState(false);
@@ -51,8 +52,8 @@ export default function AgreementModal() {
       }
 
       setOpen(false);
-    } catch (error) {
-      console.error('Error updating agreement information:', error);
+    } catch {
+      // Error occurred, but we don't need to log it here
     } finally {
       setIsSubmitting(false);
     }
@@ -88,20 +89,6 @@ export default function AgreementModal() {
         </div>
 
         <div className="border-t pt-4 mt-8">
-          <div className="flex items-start space-x-2">
-            <input
-              type="checkbox"
-              id={`${type}-checkbox`}
-              checked={isChecked}
-              onChange={(e) => setChecked(e.target.checked)}
-              className="mt-1"
-            />
-            <div>
-              <label htmlFor={`${type}-checkbox`} className="text-sm font-medium">
-                {label}
-              </label>
-            </div>
-          </div>
           <div className="mt-4 flex justify-end">
             <Button
               onClick={() => setCurrentView('main')}
@@ -142,46 +129,82 @@ export default function AgreementModal() {
           使用者協議
         </h2>
 
-        <p className="text-center">
+        <p className="text-center mb-6">
           在使用我們的服務前，請閱讀並同意以下協議：
         </p>
 
-        <div className="space-y-4 mt-6">
-          <div className="flex flex-col space-y-2">
-            <Button
-              onClick={() => setCurrentView('terms')}
-              variant="outline"
-              className="w-full"
+        <div className="space-y-4 mt-4">
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="terms-checkbox"
+              checked={termsChecked}
+              onChange={(e) => setTermsChecked(e.target.checked)}
+              className="peer"
+            />
+            <label
+              htmlFor="terms-checkbox"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              閱讀使用者條款
-              {termsChecked && <span className="ml-2 text-green-500">✓</span>}
-            </Button>
+              <Button
+                variant="link"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentView('terms');
+                }}
+                className="p-0 h-auto text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                使用者條款
+              </Button>
+            </label>
           </div>
 
-          <div className="flex flex-col space-y-2">
-            <Button
-              onClick={() => setCurrentView('privacy')}
-              variant="outline"
-              className="w-full"
+          <div className="flex items-center space-x-2">
+            <Checkbox
+              id="privacy-checkbox"
+              checked={privacyChecked}
+              onChange={(e) => setPrivacyChecked(e.target.checked)}
+              className="peer"
+            />
+            <label
+              htmlFor="privacy-checkbox"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              閱讀隱私權政策
-              {privacyChecked && <span className="ml-2 text-green-500">✓</span>}
-            </Button>
+              <Button
+                variant="link"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setCurrentView('privacy');
+                }}
+                className="p-0 h-auto text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              >
+                隱私權政策
+              </Button>
+            </label>
           </div>
-        </div>
-
-        <div className="text-sm text-gray-500 mt-4">
-          請閱讀並同意上述協議以繼續使用本服務。您需要閱讀完整內容並在每個文件底部勾選同意選項。
         </div>
 
         <div className="mt-6">
-          <Button
-            onClick={handleAgree}
-            disabled={!canAgree || isSubmitting}
-            className="w-full"
-          >
-            {isSubmitting ? '處理中...' : '同意並繼續'}
-          </Button>
+          {(() => {
+            let buttonText = '請勾選所有協議';
+
+            if (isSubmitting) {
+              buttonText = '處理中...';
+            } else if (canAgree) {
+              buttonText = '同意並繼續';
+            }
+
+            return (
+              <Button
+                onClick={handleAgree}
+                disabled={!canAgree || isSubmitting}
+                className="w-full"
+              >
+                {buttonText}
+              </Button>
+            );
+          })()}
         </div>
       </Card>
     </div>

@@ -14,7 +14,7 @@ export default async function Home({
   }
 
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-full relative">
       <Battle threadId={threadId} />
     </div>
   );

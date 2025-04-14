@@ -161,16 +161,16 @@ export default function Battle(props: { threadId: string }) {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="w-full flex flex-col md:flex-row flex-1 overflow-hidden">
-        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-1 relative">
+    <div className="flex flex-col flex-grow h-full">
+      <div className="w-full flex flex-col md:flex-row flex-1 flex-grow overflow-hidden">
+        <div className="w-full h-full overflow-y-auto border-2 md:w-1/2 md:border-1 relative">
           <CardsChat messages={messagesLeft} title="模型 A" />
         </div>
-        <div className="w-full h-1/2 overflow-y-auto border-2 md:w-1/2 md:h-full md:border-1 relative">
+        <div className="w-full h-full overflow-y-auto border-2 md:w-1/2 md:border-1 relative">
           <CardsChat messages={messagesRight} title="模型 B" />
         </div>
       </div>
-      <div className="w-full flex justify-center md:mb-8">
+      <div className="w-full flex justify-center">
         <div className="w-full md:w-[800px] bg-white hover:shadow-2xl shadow-xl transition-all rounded-xl p-2">
           <form
             onSubmit={(e) => {
@@ -198,7 +198,7 @@ export default function Battle(props: { threadId: string }) {
                 className="w-full"
                 disabled={isLoading}
               >
-                👍 模型 A 比較讚
+                👈 模型 A 比較讚
               </Button>
               <Button
                 onClick={() => { handleSubmitResult('B_IS_BETTER') }}
@@ -206,7 +206,7 @@ export default function Battle(props: { threadId: string }) {
                 className="w-full"
                 disabled={isLoading}
               >
-                👍 模型 B 比較讚
+                👉 模型 B 比較讚
               </Button>
               <Button
                 onClick={() => { handleSubmitResult('TIE') }}
@@ -214,7 +214,7 @@ export default function Battle(props: { threadId: string }) {
                 className="w-full"
                 disabled={isLoading}
               >
-                🎉 兩個都不錯
+                🤝 平手
               </Button>
               <Button
                 onClick={() => { handleSubmitResult('BOTH_BAD') }}
@@ -222,7 +222,7 @@ export default function Battle(props: { threadId: string }) {
                 className="w-full"
                 disabled={isLoading}
               >
-                💩 兩個都很爛
+                👎 兩個都很爛
               </Button>
               <Button
                 onClick={() => {
