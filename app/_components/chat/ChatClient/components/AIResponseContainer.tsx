@@ -35,7 +35,7 @@ export default function AIResponseContainer() {
       {/* Mobile view - horizontal scroll */}
       <div className="md:hidden mb-4 overflow-hidden">
         <div
-          className="flex h-[350px] overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4 pl-4 pr-2 [&::-webkit-scrollbar]:hidden"
+          className="flex h-[350px] overflow-x-auto scroll-smooth snap-x snap-mandatory gap-4 pl-4 pr-8 [&::-webkit-scrollbar]:hidden"
           style={{
             width: 'calc(100vw - 1rem)',
             scrollbarWidth: 'none',
