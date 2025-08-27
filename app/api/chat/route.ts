@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { verifyToken } from "@/lib/jwt";
 import logger from "@/lib/logger";
 import { getAvailableModels, selectRandomModels, getModelTextStream } from "@/lib/services/models";
-import { appendThreadMessage, getThreadById, saveThreadModels } from "@/lib/services/threads";
+import { appendThreadMessage, getThreadById, saveThreadModels, saveThreadPlan } from "@/lib/services/threads";
 
 export const dynamic = 'force-dynamic';
 // moved to lib/services/models
@@ -117,13 +117,20 @@ export async function POST(request: NextRequest) {
         logger.debug(`Model ${modelId} existing messages count:`, messages.length);
         const updatedMessages = [...messages, { role: 'user', content: message } as { role: 'user' | 'assistant', content: string }];
 
-        const textStream = await getModelTextStream(modelConfig, updatedMessages);
+        let planAccumulator = '';
+        const textStream = await getModelTextStream(modelConfig, updatedMessages, {
+          onPlan: async (planText: string) => {
+            const planType = modelId === thread.selectedModels[0] ? 'model1_plan' : 'model2_plan';
+            planAccumulator += planText;
+            await writer.write(encoder.encode(JSON.stringify({ type: planType, content: planText }) + '\n'));
+          },
+        });
 
-        return { modelId, textStream };
+        return { modelId, textStream, planAccumulatorRef: () => planAccumulator };
       });
 
       const responsePromises = modelPromises.map(async (modelPromise) => {
-        const { modelId, textStream } = await modelPromise;
+        const { modelId, textStream, planAccumulatorRef } = await modelPromise;
         let fullResponse = '';
 
         for await (const text of textStream) {
@@ -133,6 +140,12 @@ export async function POST(request: NextRequest) {
         }
 
         await updateThread(modelId, fullResponse);
+        const finalPlan = planAccumulatorRef();
+
+        if (finalPlan && finalPlan.length > 0) {
+          await saveThreadPlan(threadID, modelId, finalPlan);
+        }
+
         logger.info(`Model ${modelId} processing completed. Final response saved to database.`);
 
         return { modelId, done: true };

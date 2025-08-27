@@ -19,6 +19,8 @@ interface ThreadDocument {
   selectedModels: string[];
   model1Messages: { role: 'user' | 'assistant'; content: string }[];
   model2Messages: { role: 'user' | 'assistant'; content: string }[];
+  model1Plan?: string;
+  model2Plan?: string;
 }
 
 async function getThreadMessages(threadID: ObjectId) {
@@ -58,10 +60,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ messagesLeft: [], messagesRight: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    const response = {
+    const response: any = {
       messagesLeft: thread.model1Messages || [],
       messagesRight: thread.model2Messages || []
     };
+    if (thread.model1Plan) response.planLeft = thread.model1Plan;
+    if (thread.model2Plan) response.planRight = thread.model2Plan;
 
     logger.info('Returning history:', {
       leftCount: response.messagesLeft.length,

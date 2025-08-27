@@ -64,3 +64,25 @@ export async function appendThreadMessage(
 
   await threads.updateOne({ _id: threadID }, update);
 }
+
+export async function saveThreadPlan(
+  threadID: ObjectId,
+  modelId: string,
+  planText: string,
+) {
+  const db = await getDb('arena');
+  const threads = db.collection<ThreadDocument>('threads');
+  const find = await threads.findOne({ _id: threadID });
+
+  if (!find) {
+    throw new Error('Thread not found');
+  }
+
+  const fieldName: 'model1Plan' | 'model2Plan' =
+    modelId === find.selectedModels[0] ? 'model1Plan' : 'model2Plan';
+
+  await threads.updateOne(
+    { _id: threadID },
+    { $set: { [fieldName]: planText, updatedAt: new Date() } as any }
+  );
+}

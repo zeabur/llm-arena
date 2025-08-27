@@ -47,9 +47,11 @@ export async function POST(req: NextRequest) {
   // AuthZ: ensure the thread belongs to the authenticated user
   try {
     const token = req.cookies.get('token')?.value;
+
     if (!token) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
     const userId = verifyToken(token);
 
     if (!thread.userID || !thread.userID.equals(userId)) {
