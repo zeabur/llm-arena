@@ -86,7 +86,7 @@ export function useChatSubmission({
       setMessagesRight(prev => [...prev.slice(0, -1), errorMessage]);
       setIsLoading(false);
     }
-  }, [setInput, setIsLoading, threadId, setMessagesLeft, setMessagesRight]);
+  }, [setInput, setIsLoading, threadId, setMessagesLeft, setMessagesRight, setPlanLeft, setPlanRight]);
 
   const handleSubmit = useCallback(async () => {
     // 如果已投票，創建新對話而不是在當前 thread 中繼續

@@ -60,7 +60,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ messagesLeft: [], messagesRight: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    const response: any = {
+    const response: {
+      messagesLeft: { role: 'user' | 'assistant'; content: string }[];
+      messagesRight: { role: 'user' | 'assistant'; content: string }[];
+      planLeft?: string;
+      planRight?: string;
+    } = {
       messagesLeft: thread.model1Messages || [],
       messagesRight: thread.model2Messages || []
     };

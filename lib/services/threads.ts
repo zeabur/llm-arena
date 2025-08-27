@@ -83,6 +83,6 @@ export async function saveThreadPlan(
 
   await threads.updateOne(
     { _id: threadID },
-    { $set: { [fieldName]: planText, updatedAt: new Date() } as any }
+    { $set: { [fieldName]: planText, updatedAt: new Date() } as UpdateFilter<ThreadDocument>['$set'] }
   );
 }

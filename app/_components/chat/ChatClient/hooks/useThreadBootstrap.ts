@@ -141,5 +141,5 @@ export function useThreadBootstrap({
     }
 
     loadThreadData();
-  }, [threadId, messagesLeft.length, messagesRight.length, setMessagesLeft, setMessagesRight, isLoadingRef, loadedThreadIdRef, handleSubmitWithMessage]);
+  }, [threadId, messagesLeft.length, messagesRight.length, setMessagesLeft, setMessagesRight, isLoadingRef, loadedThreadIdRef, handleSubmitWithMessage, setPlanLeft, setPlanRight]);
 }

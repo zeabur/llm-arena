@@ -116,7 +116,7 @@ export async function fetchChatResponse(
             callbacks.onModel2PlanUpdate?.(plan2);
             break;
           }
-        } catch (e) {
+        } catch {
           logger.warn('Skipping malformed stream line:', line);
         }
       }
