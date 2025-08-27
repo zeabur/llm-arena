@@ -16,6 +16,9 @@ interface UseChatSubmissionProps {
   setMessagesRight: React.Dispatch<React.SetStateAction<Message[]>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   hasVoted?: boolean; // 新增：是否已投票
+  // 新增：規劃/思考文本 setter
+  setPlanLeft?: React.Dispatch<React.SetStateAction<string>>;
+  setPlanRight?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useChatSubmission({
@@ -25,7 +28,9 @@ export function useChatSubmission({
   setMessagesLeft,
   setMessagesRight,
   setIsLoading,
-  hasVoted = false
+  hasVoted = false,
+  setPlanLeft,
+  setPlanRight,
 }: UseChatSubmissionProps) {
   const [input, setInput] = useState<string>('');
   const router = useRouter();
@@ -43,6 +48,9 @@ export function useChatSubmission({
 
     setMessagesLeft(prev => [...prev, newUserMessage, loadingMessage]);
     setMessagesRight(prev => [...prev, newUserMessage, loadingMessage]);
+    // 重置規劃/思考內容
+    setPlanLeft?.('');
+    setPlanRight?.('');
 
     try {
       await fetchChatResponse(threadId, messageText, {
@@ -64,6 +72,9 @@ export function useChatSubmission({
             { role: 'assistant', content }
           ]);
         },
+        // 規劃/思考串流（左右模型）
+        onModel1PlanUpdate: (plan) => setPlanLeft?.(plan),
+        onModel2PlanUpdate: (plan) => setPlanRight?.(plan),
         onComplete: () => {
           setIsLoading(false);
         }

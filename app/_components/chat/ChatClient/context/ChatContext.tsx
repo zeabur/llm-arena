@@ -10,6 +10,9 @@ interface ChatContextType {
   selectedVote: string | null;
   hasVoted: boolean;
   threadId: string;
+  // 新增：規劃/思考文本（左右模型）
+  planLeft: string;
+  planRight: string;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);

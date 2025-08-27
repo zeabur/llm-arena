@@ -21,7 +21,7 @@ export const useScreenshot = () => {
       const isMobile = window.innerWidth < 768;
       // 手機版使用固定寬度 600px，桌面版使用原本的 scrollWidth
       const targetWidth = isMobile ? 600 : element.scrollWidth;
-      
+
       const options = {
         // Use device pixel ratio for better quality on high-res screens (mobile)
         pixelRatio: window.devicePixelRatio || 2,

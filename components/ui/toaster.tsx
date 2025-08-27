@@ -14,7 +14,7 @@ export function Toaster() {
   const { toasts } = useToast()
 
   return (
-    <ToastProvider 
+    <ToastProvider
       duration={3000}
       swipeDirection="right"
     >
@@ -28,10 +28,11 @@ export function Toaster() {
               // 處理手機版焦點問題，防止 toast 不會自動消失
               if (!open) {
                 const viewport = document.getElementById("toast-viewport");
+
                 if (viewport) {
                   viewport.blur();
                 }
-                
+
                 // 確保移除焦點狀態
                 if (document.activeElement instanceof HTMLElement) {
                   document.activeElement.blur();

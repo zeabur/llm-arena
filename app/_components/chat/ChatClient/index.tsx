@@ -29,7 +29,11 @@ export default function ChatClient({ threadId }: { threadId: string }) {
     isLoading,
     setMessagesLeft,
     setMessagesRight,
-    setIsLoading
+    setIsLoading,
+    planLeft,
+    planRight,
+    setPlanLeft,
+    setPlanRight,
   } = useChatMessages();
 
   // （effect moved below after useChatSubmission）
@@ -61,8 +65,12 @@ export default function ChatClient({ threadId }: { threadId: string }) {
     setMessagesLeft,
     setMessagesRight,
     setIsLoading,
-    hasVoted // 傳遞投票狀態
+    hasVoted, // 傳遞投票狀態
+    setPlanLeft,
+    setPlanRight,
   });
+
+  // 移除顯示思考過程切換，改為永遠展示規劃內容
 
   useThreadBootstrap({
     threadId,
@@ -73,6 +81,8 @@ export default function ChatClient({ threadId }: { threadId: string }) {
     isLoadingRef,
     loadedThreadIdRef,
     handleSubmitWithMessage,
+    setPlanLeft,
+    setPlanRight,
   });
 
   // 關閉側邊欄
@@ -87,7 +97,9 @@ export default function ChatClient({ threadId }: { threadId: string }) {
       isLoading,
       selectedVote,
       hasVoted,
-      threadId
+      threadId,
+      planLeft,
+      planRight,
     }}>
       <div className="w-full h-full">
         {/* 回答側邊欄 */}

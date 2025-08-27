@@ -14,6 +14,9 @@ interface UseThreadBootstrapParams {
   isLoadingRef: React.MutableRefObject<boolean>;
   loadedThreadIdRef: React.MutableRefObject<string | null>;
   handleSubmitWithMessage: (messageText: string) => void;
+  // 新增：設定規劃文本
+  setPlanLeft?: React.Dispatch<React.SetStateAction<string>>;
+  setPlanRight?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useThreadBootstrap({
@@ -25,6 +28,8 @@ export function useThreadBootstrap({
   isLoadingRef,
   loadedThreadIdRef,
   handleSubmitWithMessage,
+  setPlanLeft,
+  setPlanRight,
 }: UseThreadBootstrapParams) {
   useEffect(() => {
     async function loadThreadData() {
@@ -58,13 +63,15 @@ export function useThreadBootstrap({
         });
 
         if (response.ok) {
-          const { messagesLeft: left, messagesRight: right } = await response.json();
+          const { messagesLeft: left, messagesRight: right, planLeft, planRight } = await response.json();
           logger.debug('History loaded:', { leftCount: left.length, rightCount: right.length });
 
           if (left.length > 0 || right.length > 0) {
             // 有歷史對話，直接載入
             setMessagesLeft(mapApiMessagesToClientMessages(left));
             setMessagesRight(mapApiMessagesToClientMessages(right));
+            if (typeof planLeft === 'string') setPlanLeft?.(planLeft);
+            if (typeof planRight === 'string') setPlanRight?.(planRight);
           } else {
             // 沒有歷史對話，嘗試獲取 thread 的初始問題
             await loadInitialQuestion();

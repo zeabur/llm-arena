@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
@@ -11,14 +11,17 @@ import logger from '@/lib/logger';
 export type AIResponseProps = {
   number: string; // AI 編號，例如 "1號" 或 "2號"
   content: string; // 回應內容
+  planContent?: string; // 規劃/思考內容（可選）
   className?: string;
 };
 
 export const AIResponse = React.memo(({
   number,
   content,
+  planContent,
   className = ""
 }: AIResponseProps) => {
+  const [planCollapsed, setPlanCollapsed] = useState(false);
   // 調試：追蹤重新渲染
   logger.debug(`[AIResponse-${number}] Rendering with content length:`, content.length, 'at', new Date().toISOString());
 
@@ -40,10 +43,31 @@ export const AIResponse = React.memo(({
   return (
     <div className={`flex-1 bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden h-full flex flex-col ${className}`}>
       <div className="px-4 py-2 bg-gray-100 text-sm font-medium text-gray-500">
-        <div className="inline-block bg-white rounded-full px-3 py-1">
-          AI {number}
-        </div>
+        <div className="inline-block bg-white rounded-full px-3 py-1">AI {number}</div>
       </div>
+      {planContent && (
+        <div className="px-4 pt-3">
+          <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-gray-600 text-xs">
+            <div className="flex items-center justify-between mb-1">
+              <div className="font-medium">💭 思考過程</div>
+              <button
+                type="button"
+                className="text-[11px] text-gray-600 hover:text-gray-800 px-2 py-1 rounded border border-transparent hover:border-gray-300"
+                onClick={() => setPlanCollapsed(v => !v)}
+                aria-expanded={!planCollapsed}
+                aria-controls={`plan-${number}`}
+              >
+                {planCollapsed ? '展開' : '收合'}
+              </button>
+            </div>
+            {!planCollapsed && (
+              <div id={`plan-${number}`} className="whitespace-pre-wrap">
+                {planContent}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className="p-4 flex-1 overflow-y-auto prose prose-sm max-w-none text-sm text-gray-700">
         <ReactMarkdown
           remarkPlugins={remarkPlugins}

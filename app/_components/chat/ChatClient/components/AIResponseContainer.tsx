@@ -6,7 +6,7 @@ import { AIResponse } from '../../AIResponse';
 import { useChatContext } from '../context/ChatContext';
 
 export default function AIResponseContainer() {
-  const { messagesLeft, messagesRight } = useChatContext();
+  const { messagesLeft, messagesRight, planLeft, planRight } = useChatContext();
 
   // 調試：追蹤重新渲染（生產環境預設關閉，見 logger 實作）
   logger.debug('[AIResponseContainer] Rendering with:', {
@@ -47,6 +47,7 @@ export default function AIResponseContainer() {
             <AIResponse
               number="1號"
               content={leftContent}
+              planContent={planLeft}
             />
           </div>
 
@@ -55,6 +56,7 @@ export default function AIResponseContainer() {
             <AIResponse
               number="2號"
               content={rightContent}
+              planContent={planRight}
             />
           </div>
         </div>
@@ -67,6 +69,7 @@ export default function AIResponseContainer() {
           <AIResponse
             number="1號"
             content={leftContent}
+            planContent={planLeft}
           />
         </div>
 
@@ -75,6 +78,7 @@ export default function AIResponseContainer() {
           <AIResponse
             number="2號"
             content={rightContent}
+            planContent={planRight}
           />
         </div>
       </div>

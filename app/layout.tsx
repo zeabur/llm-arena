@@ -35,6 +35,7 @@ export const metadata: Metadata = {
 
 const getUserByID = async (userID: ObjectId) => {
   const db = await getDb('arena');
+
   return await db.collection('users').findOne({ _id: userID });
 }
 

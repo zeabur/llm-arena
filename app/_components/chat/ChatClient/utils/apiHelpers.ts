@@ -12,7 +12,9 @@ export async function fetchChatResponse(
     onModel1Update: (content: string) => void,
     onModel2Update: (content: string) => void,
     onComplete: () => void,
-    onHistoryLoaded?: (messagesLeft: Array<{role: string, content: string}>, messagesRight: Array<{role: string, content: string}>) => void
+    onHistoryLoaded?: (messagesLeft: Array<{role: string, content: string}>, messagesRight: Array<{role: string, content: string}>) => void,
+    onModel1PlanUpdate?: (content: string) => void,
+    onModel2PlanUpdate?: (content: string) => void,
   },
   category?: string,
   initialContext?: { question: string; source: string; metadata?: Record<string, unknown> },
@@ -69,6 +71,8 @@ export async function fetchChatResponse(
   let geminiResponse = '';
 
   let done = false;
+  let plan1 = '';
+  let plan2 = '';
 
   // 使用串流讀取回應
   let buffer = '';
@@ -102,6 +106,14 @@ export async function fetchChatResponse(
           case 'model2':
             geminiResponse += data.content;
             callbacks.onModel2Update(geminiResponse);
+            break;
+          case 'model1_plan':
+            plan1 += data.content;
+            callbacks.onModel1PlanUpdate?.(plan1);
+            break;
+          case 'model2_plan':
+            plan2 += data.content;
+            callbacks.onModel2PlanUpdate?.(plan2);
             break;
           }
         } catch (e) {
