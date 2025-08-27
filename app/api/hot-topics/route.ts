@@ -58,7 +58,7 @@ const mockHotTopics: HotTopic[] = [
   },
   {
     id: '7',
-    title: '台灣醫療體系的優缺點分析',
+    title: '台灣醫療體系的優缺點分析？',
     views: 578,
     days: 6,
     category: '醫療'

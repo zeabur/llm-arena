@@ -75,11 +75,11 @@ export default function UserDropdown({ isDesktop = true, onOpen }: UserDropdownP
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col flex-1">
                     <h3 className="text-lg font-bold text-gray-900">{user.username}</h3>
-                    <div className="flex items-center space-x-1">
+                    <div className="hidden items-center space-x-1">
                       <span className="text-lg font-bold text-gray-900">積分</span>
                       <span className="text-lg font-bold text-blue-500">3000</span>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="hidden items-center space-x-1">
                       <span className="text-lg font-bold text-gray-900">稱號</span>
                       <span className="text-lg font-bold text-blue-500">智慧之樹</span>
                     </div>

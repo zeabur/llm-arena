@@ -62,7 +62,7 @@ export default function Header() {
           </div>
           <div className="flex items-center space-x-4">
             <UserDropdown isDesktop={true} />
-            <Link href="/daily-topic" className="bg-blue-500 text-white px-4 py-2 rounded-3xl hover:bg-blue-600 transition-colors flex items-center space-x-2">
+            <Link href="/daily-topic" className="hidden bg-blue-500 text-white px-4 py-2 rounded-3xl hover:bg-blue-600 transition-colors flex items-center space-x-2">
               <img src="/icons/nav/bulb-white.svg" alt="Bulb" width={18} height={18} />
               <span>每日主題</span>
             </Link>
@@ -99,7 +99,7 @@ export default function Header() {
 
           <div className="flex items-center space-x-2">
             <UserDropdown isDesktop={false} onOpen={() => setIsMenuOpen(false)} />
-            <Link href="/daily-topic" className="focus:outline-none">
+            <Link href="/daily-topic" className="hidden focus:outline-none">
               <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
                 <img src="/icons/nav/bulb-white.svg" alt="Bulb" width={20} height={20} />
               </div>
