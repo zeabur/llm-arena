@@ -21,6 +21,7 @@ export const AIResponse = React.memo(({
   planContent,
   className = ""
 }: AIResponseProps) => {
+  // 思考過程預設展開，使用者可手動收合
   const [planCollapsed, setPlanCollapsed] = useState(false);
   // 調試：追蹤重新渲染
   logger.debug(`[AIResponse-${number}] Rendering with content length:`, content.length, 'at', new Date().toISOString());
@@ -45,36 +46,38 @@ export const AIResponse = React.memo(({
       <div className="px-4 py-2 bg-gray-100 text-sm font-medium text-gray-500">
         <div className="inline-block bg-white rounded-full px-3 py-1">AI {number}</div>
       </div>
-      {planContent && (
-        <div className="px-4 pt-3">
-          <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-gray-600 text-xs">
-            <div className="flex items-center justify-between mb-1">
-              <div className="font-medium">💭 思考過程</div>
-              <button
-                type="button"
-                className="text-[11px] text-gray-600 hover:text-gray-800 px-2 py-1 rounded border border-transparent hover:border-gray-300"
-                onClick={() => setPlanCollapsed(v => !v)}
-                aria-expanded={!planCollapsed}
-                aria-controls={`plan-${number}`}
-              >
-                {planCollapsed ? '展開' : '收合'}
-              </button>
-            </div>
-            {!planCollapsed && (
-              <div id={`plan-${number}`} className="whitespace-pre-wrap">
-                {planContent}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 prose prose-sm max-w-none text-sm text-gray-700">
+          {planContent && (
+            <div className="mb-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-gray-600 text-xs">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-medium">💭 思考過程</div>
+                  <button
+                    type="button"
+                    className="text-[11px] text-gray-600 hover:text-gray-800 px-2 py-1 rounded border border-transparent hover:border-gray-300"
+                    onClick={() => setPlanCollapsed(v => !v)}
+                    aria-expanded={!planCollapsed}
+                    aria-controls={`plan-${number}`}
+                  >
+                    {planCollapsed ? '展開' : '收合'}
+                  </button>
+                </div>
+                {!planCollapsed && (
+                  <div id={`plan-${number}`} className="whitespace-pre-wrap">
+                    {planContent}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+          <ReactMarkdown
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
+          >
+            {stableContent}
+          </ReactMarkdown>
         </div>
-      )}
-      <div className="p-4 flex-1 overflow-y-auto prose prose-sm max-w-none text-sm text-gray-700">
-        <ReactMarkdown
-          remarkPlugins={remarkPlugins}
-          rehypePlugins={rehypePlugins}
-        >
-          {stableContent}
-        </ReactMarkdown>
       </div>
     </div>
   );
