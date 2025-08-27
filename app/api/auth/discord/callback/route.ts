@@ -1,6 +1,6 @@
 import {NextRequest} from "next/server";
 import {ObjectId} from "mongodb";
-import getMongoClient from "@/lib/mongo";
+import { getDb } from "@/lib/mongo";
 import {generateToken} from "@/lib/jwt";
 
 export async function GET(request: NextRequest) {
@@ -13,10 +13,10 @@ export async function GET(request: NextRequest) {
 
   const discordUserInfo = await getDiscordUserInfoFromCode(code);
 
-  const mongo = await getMongoClient();
+  const db = await getDb('arena');
 
   try {
-    const existing = await mongo.db('arena').collection('users').findOne({discordID: discordUserInfo.id});
+    const existing = await db.collection('users').findOne({discordID: discordUserInfo.id});
 
     if (!existing) {
       const newUserDoc = {
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         avatar: `https://cdn.discordapp.com/avatars/${discordUserInfo.id}/${discordUserInfo.avatar}`,
       };
 
-      await mongo.db('arena').collection('users').insertOne(newUserDoc);
+      await db.collection('users').insertOne(newUserDoc);
 
       const token = generateToken(newUserDoc._id);
 
@@ -51,8 +51,6 @@ export async function GET(request: NextRequest) {
 
   } catch {
     return new Response('Internal Error.', {status: 500});
-  } finally {
-    await mongo.close();
   }
 }
 

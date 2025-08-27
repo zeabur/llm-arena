@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import logger from '@/lib/logger';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -82,7 +83,7 @@ export default function HomeContent() {
       // 導航到新的對話頁面（不再在 URL 中傳遞問題）
       router.push(`/chat/${newThreadId}`);
     } catch (error) {
-      console.error('創建對話失敗:', error);
+      logger.error('創建對話失敗:', error);
 
       // 檢查是否為未登入錯誤
       if (error instanceof Error && error.message.includes('用戶未登入')) {
@@ -108,6 +109,7 @@ export default function HomeContent() {
     if (!user) {
       // 未登入時直接導向登入頁面，不檢查輸入
       window.location.href = '/api/auth/login';
+
       return;
     }
 
@@ -122,6 +124,7 @@ export default function HomeContent() {
     if (!user) {
       // 未登入時直接導向登入頁面，不檢查輸入
       window.location.href = '/api/auth/login';
+
       return;
     }
 

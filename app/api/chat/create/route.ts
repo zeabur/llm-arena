@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ObjectId } from "mongodb";
 import { verifyToken } from "@/lib/jwt";
-import getMongoClient from "@/lib/mongo";
+import logger from "@/lib/logger";
+import { getDb } from "@/lib/mongo";
 
 interface CreateChatRequest {
   category?: string;
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     const token = cookieStore.get('token')?.value;
 
     if (!token) {
-      console.log('[API] No token found');
+      logger.warn('No token found');
 
       return NextResponse.json({ error: "未授權" }, { status: 401 });
     }
@@ -29,9 +30,9 @@ export async function POST(request: NextRequest) {
 
     try {
       userID = verifyToken(token);
-      console.log('[API] User authenticated:', userID.toHexString());
+      logger.info('User authenticated:', userID.toHexString());
     } catch (error) {
-      console.log('[API] Token verification failed:', error);
+      logger.warn('Token verification failed:', error);
 
       return NextResponse.json({ error: "無效的令牌" }, { status: 401 });
     }
@@ -42,9 +43,8 @@ export async function POST(request: NextRequest) {
     // 生成新的 threadId
     const threadId = new ObjectId().toHexString();
 
-    // 連接到 MongoDB
-    const client = await getMongoClient();
-    const db = client.db("arena"); // 使用正確的數據庫名稱
+    // 取得資料庫（單例連線）
+    const db = await getDb('arena');
     const threadsCollection = db.collection("threads");
 
     // 創建新的對話記錄
@@ -66,9 +66,8 @@ export async function POST(request: NextRequest) {
     };
 
     await threadsCollection.insertOne(threadDocument);
-    await client.close(); // 關閉數據庫連接
 
-    console.log('[API] Created new thread:', threadId, 'for user:', userID.toHexString());
+    logger.info('Created new thread:', threadId, 'for user:', userID.toHexString());
 
     return NextResponse.json({
       threadId,
@@ -76,7 +75,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error("創建對話失敗:", error);
+    logger.error("創建對話失敗:", error);
 
     return NextResponse.json(
       { error: "創建對話失敗" },

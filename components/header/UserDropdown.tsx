@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from '@/app/contexts/UserContext';
+import logger from '@/lib/logger';
 import DiscordButton from './DiscordButton';
 
 interface UserDropdownProps {
@@ -51,7 +52,7 @@ export default function UserDropdown({ isDesktop = true, onOpen }: UserDropdownP
         window.location.href = data.redirectUrl;
       }
     } catch (error) {
-      console.error('Logout failed:', error);
+      logger.error('Logout failed:', error);
     }
   };
 
@@ -65,7 +66,8 @@ export default function UserDropdown({ isDesktop = true, onOpen }: UserDropdownP
       </button>
 
       {isProfileOpen && (
-        <div className="absolute right-0 mt-2 w-72 bg-white rounded-2xl shadow-lg py-5 z-50 border">
+        <div className="absolute mt-2 w-72 max-w-[calc(100vw-1rem)] bg-white rounded-2xl shadow-lg py-5 z-50 border
+                        -left-14 -translate-x-1/2 xs:left-1/2 xs:-translate-x-1/2 sm:left-auto sm:right-0 sm:translate-x-0">
           {user ? (
             <>
               {/* 使用者資訊區域 */}
@@ -73,11 +75,11 @@ export default function UserDropdown({ isDesktop = true, onOpen }: UserDropdownP
                 <div className="flex items-start justify-between">
                   <div className="flex flex-col flex-1">
                     <h3 className="text-lg font-bold text-gray-900">{user.username}</h3>
-                    <div className="flex items-center space-x-1">
+                    <div className="hidden items-center space-x-1">
                       <span className="text-lg font-bold text-gray-900">積分</span>
                       <span className="text-lg font-bold text-blue-500">3000</span>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="hidden items-center space-x-1">
                       <span className="text-lg font-bold text-gray-900">稱號</span>
                       <span className="text-lg font-bold text-blue-500">智慧之樹</span>
                     </div>

@@ -40,4 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# IDE
 .idea
+.kiro
+.vscode
+.cursor
+.claude

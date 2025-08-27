@@ -1,25 +1,30 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import rehypeSanitize from 'rehype-sanitize';
+import logger from '@/lib/logger';
 
 // AI 回應元件
 export type AIResponseProps = {
   number: string; // AI 編號，例如 "1號" 或 "2號"
   content: string; // 回應內容
+  planContent?: string; // 規劃/思考內容（可選）
   className?: string;
 };
 
 export const AIResponse = React.memo(({
   number,
   content,
+  planContent,
   className = ""
 }: AIResponseProps) => {
+  // 思考過程預設展開，使用者可手動收合
+  const [planCollapsed, setPlanCollapsed] = useState(false);
   // 調試：追蹤重新渲染
-  console.log(`[AIResponse-${number}] Rendering with content length:`, content.length, 'at', new Date().toISOString());
+  logger.debug(`[AIResponse-${number}] Rendering with content length:`, content.length, 'at', new Date().toISOString());
 
   // 穩定 plugin 配置，避免每次渲染時重新創建
   const remarkPlugins = useMemo(() => [remarkGfm], []);
@@ -39,17 +44,40 @@ export const AIResponse = React.memo(({
   return (
     <div className={`flex-1 bg-white rounded-lg border border-gray-100 shadow-sm overflow-hidden h-full flex flex-col ${className}`}>
       <div className="px-4 py-2 bg-gray-100 text-sm font-medium text-gray-500">
-        <div className="inline-block bg-white rounded-full px-3 py-1">
-          AI {number}
-        </div>
+        <div className="inline-block bg-white rounded-full px-3 py-1">AI {number}</div>
       </div>
-      <div className="p-4 flex-1 overflow-y-auto prose prose-sm max-w-none text-sm text-gray-700">
-        <ReactMarkdown
-          remarkPlugins={remarkPlugins}
-          rehypePlugins={rehypePlugins}
-        >
-          {stableContent}
-        </ReactMarkdown>
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-4 prose prose-sm max-w-none text-sm text-gray-700">
+          {planContent && (
+            <div className="mb-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-md p-3 text-gray-600 text-xs">
+                <div className="flex items-center justify-between mb-1">
+                  <div className="font-medium">💭 思考過程</div>
+                  <button
+                    type="button"
+                    className="text-[11px] text-gray-600 hover:text-gray-800 px-2 py-1 rounded border border-transparent hover:border-gray-300"
+                    onClick={() => setPlanCollapsed(v => !v)}
+                    aria-expanded={!planCollapsed}
+                    aria-controls={`plan-${number}`}
+                  >
+                    {planCollapsed ? '展開' : '收合'}
+                  </button>
+                </div>
+                {!planCollapsed && (
+                  <div id={`plan-${number}`} className="whitespace-pre-wrap">
+                    {planContent}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          <ReactMarkdown
+            remarkPlugins={remarkPlugins}
+            rehypePlugins={rehypePlugins}
+          >
+            {stableContent}
+          </ReactMarkdown>
+        </div>
       </div>
     </div>
   );
@@ -69,7 +97,7 @@ export const AIResponse = React.memo(({
     const nextTrimmed = nextProps.content.trim();
 
     if (prevTrimmed === nextTrimmed) {
-      console.log(`[AIResponse-${nextProps.number}] Skipping render - content unchanged`);
+      logger.debug(`[AIResponse-${nextProps.number}] Skipping render - content unchanged`);
 
       return true; // 不重新渲染
     }
@@ -78,9 +106,9 @@ export const AIResponse = React.memo(({
   const shouldSkipRender = !contentChanged && !numberChanged && !classNameChanged;
 
   if (shouldSkipRender) {
-    console.log(`[AIResponse-${nextProps.number}] Skipping render - no changes`);
+    logger.debug(`[AIResponse-${nextProps.number}] Skipping render - no changes`);
   } else {
-    console.log(`[AIResponse-${nextProps.number}] Will render - changes detected:`, {
+    logger.debug(`[AIResponse-${nextProps.number}] Will render - changes detected:`, {
       contentChanged,
       numberChanged,
       classNameChanged

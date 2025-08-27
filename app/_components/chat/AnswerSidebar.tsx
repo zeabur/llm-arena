@@ -83,7 +83,7 @@ export const AnswerSidebar = ({ isOpen, onClose, threadId, onSuccess }: AnswerSi
       // 關閉側邊欄並清空回答
       onClose();
       setAnswer("");
-    } catch (error) {
+    } catch {
       toast({
         title: "提交失敗",
         description: "請稍後再試",

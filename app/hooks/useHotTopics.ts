@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import logger from '@/lib/logger';
 
 export interface HotTopic {
   id: string;
@@ -36,7 +37,7 @@ export function useHotTopics(limit: number = 10): UseHotTopicsResult {
         setError(data.error || '獲取熱門問題失敗');
       }
     } catch (err) {
-      console.error('獲取熱門問題失敗:', err);
+      logger.error('獲取熱門問題失敗:', err);
       setError('網路錯誤，請稍後再試');
     } finally {
       setLoading(false);

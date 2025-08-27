@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ObjectId } from "mongodb";
-import getMongoClient from "@/lib/mongo";
+import { getDb } from "@/lib/mongo";
+import logger from "@/lib/logger";
+
+export const dynamic = 'force-dynamic';
 
 interface ThreadDocument {
   _id: ObjectId;
@@ -16,73 +19,69 @@ interface ThreadDocument {
   selectedModels: string[];
   model1Messages: { role: 'user' | 'assistant'; content: string }[];
   model2Messages: { role: 'user' | 'assistant'; content: string }[];
+  model1Plan?: string;
+  model2Plan?: string;
 }
 
 async function getThreadMessages(threadID: ObjectId) {
-  const mongo = await getMongoClient();
+  const db = await getDb('arena');
+  const threads = db.collection<ThreadDocument>('threads');
+  const thread = await threads.findOne({ _id: threadID });
 
-  try {
-    const threads = mongo.db('arena').collection<ThreadDocument>('threads');
-    const thread = await threads.findOne({ _id: threadID })
-
-    if (!thread) {
-      return null;
-    }
-
-    return thread;
-  } catch (error) {
-    console.log('[DB] Error getting thread messages:', error);
-
-    return null;
-  } finally {
-    await mongo.close();
-  }
+  return thread ?? null;
 }
 
 export async function POST(request: NextRequest) {
-  console.log('[API] POST /api/chat/history - Request started');
+  logger.info('POST /api/chat/history - Request started');
 
   try {
     const { threadId } = await request.json();
-    console.log('[API] History request for threadId:', threadId);
+    logger.debug('History request for threadId:', threadId);
 
     if (!threadId) {
-      console.log('[API] No threadId provided, returning empty messages');
+      logger.warn('No threadId provided, returning empty messages');
 
-      return NextResponse.json({ messagesLeft: [], messagesRight: [] });
+      return NextResponse.json({ messagesLeft: [], messagesRight: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
     let thread = null;
 
     try {
       thread = await getThreadMessages(new ObjectId(threadId));
-      console.log('[API] Thread loaded:', thread ? 'found' : 'not found');
+      logger.debug('Thread loaded:', thread ? 'found' : 'not found');
     } catch (error) {
-      console.log('[API] Error loading thread:', error);
+      logger.error('Error loading thread:', error);
       thread = null;
     }
 
     if (!thread) {
-      console.log('[API] Thread not found, returning empty messages');
+      logger.info('Thread not found, returning empty messages');
 
-      return NextResponse.json({ messagesLeft: [], messagesRight: [] });
+      return NextResponse.json({ messagesLeft: [], messagesRight: [] }, { headers: { 'Cache-Control': 'no-store' } });
     }
 
-    const response = {
+    const response: {
+      messagesLeft: { role: 'user' | 'assistant'; content: string }[];
+      messagesRight: { role: 'user' | 'assistant'; content: string }[];
+      planLeft?: string;
+      planRight?: string;
+    } = {
       messagesLeft: thread.model1Messages || [],
       messagesRight: thread.model2Messages || []
     };
+    if (thread.model1Plan) response.planLeft = thread.model1Plan;
+    if (thread.model2Plan) response.planRight = thread.model2Plan;
 
-    console.log('[API] Returning history:', {
+    logger.info('Returning history:', {
       leftCount: response.messagesLeft.length,
       rightCount: response.messagesRight.length
     });
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { headers: { 'Cache-Control': 'no-store' } });
 
   } catch (error) {
-    console.log('[API] Error in history endpoint:', error);
+    logger.error('Error in history endpoint:', error);
 
-    return NextResponse.json({ messagesLeft: [], messagesRight: [] });
+    return NextResponse.json({ messagesLeft: [], messagesRight: [] }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }

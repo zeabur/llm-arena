@@ -5,7 +5,8 @@ import { cookies } from "next/headers";
 import { ObjectId } from "mongodb";
 import { Toaster } from "@/components/ui/toaster";
 import { verifyToken } from "@/lib/jwt";
-import getMongoClient from "@/lib/mongo";
+import { getDb } from "@/lib/mongo";
+import logger from '@/lib/logger';
 import { UserProvider } from './providers/UserProvider';
 import AgreementModal from './_components/AgreementModal';
 import Header from './_components/Header';
@@ -33,13 +34,9 @@ export const metadata: Metadata = {
 };
 
 const getUserByID = async (userID: ObjectId) => {
-  const mongo = await getMongoClient();
+  const db = await getDb('arena');
 
-  try {
-    return await mongo.db('arena').collection('users').findOne({ _id: userID });
-  } finally {
-    await mongo.close();
-  }
+  return await db.collection('users').findOne({ _id: userID });
 }
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
@@ -54,7 +51,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       user = await getUserByID(userID);
     } catch (error) {
       // Token 無效，但不重定向，讓使用者留在當前頁面
-      console.log('Invalid token:', error);
+      logger.warn('Invalid token:', error);
     }
   }
 

@@ -25,7 +25,7 @@ export default function DailyTopicPage() {
     comments: 42
   };
 
-  // 假資料：熱門回應
+  // 假資料：熱門問題
   const topResponses = [
     { id: 1, title: '如果未來 AI 出題，考試會變成什麼樣子？', views: 35, days: 2 },
     { id: 2, title: '幫我分析歷年台灣高雄地區的立委選舉各行政區趨勢，數據......', views: 52, days: 2 },
@@ -81,14 +81,14 @@ export default function DailyTopicPage() {
           </div>
         </div>
 
-        {/* 熱門回應區 */}
+        {/* 熱門問題區 */}
         <section className="mt-8 md:bg-gray-50 rounded-xl p-6 md:p-8">
           {/* 手機版標題 - 只在手機版顯示 */}
-          <h2 className="text-xl font-medium text-gray-700 mb-6 md:hidden text-left">熱門回應 TOP-5 (開發中)</h2>
+          <h2 className="text-xl font-medium text-gray-700 mb-6 md:hidden text-left">熱門問題 TOP-5 (開發中)</h2>
 
           {/* 桌面版標題和搜尋 - 只在桌面版顯示 */}
           <div className="hidden md:flex justify-between items-center mb-6">
-            <h2 className="text-xl md:text-2xl font-medium text-gray-700">熱門回應 TOP-5 (開發中)</h2>
+            <h2 className="text-xl md:text-2xl font-medium text-gray-700">熱門問題 TOP-5 (開發中)</h2>
             <div className="relative w-64">
               <Input
                 className="pl-10"

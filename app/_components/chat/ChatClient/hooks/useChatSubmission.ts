@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import logger from '@/lib/logger';
 import { Message } from '../../types';
 import { fetchChatResponse } from '../utils/apiHelpers';
+import { mapApiMessagesToClientMessages } from '../utils/message';
 import { startNewConversation } from '../../../../utils/conversationStarter';
 
 interface UseChatSubmissionProps {
@@ -14,6 +16,9 @@ interface UseChatSubmissionProps {
   setMessagesRight: React.Dispatch<React.SetStateAction<Message[]>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   hasVoted?: boolean; // 新增：是否已投票
+  // 新增：規劃/思考文本 setter
+  setPlanLeft?: React.Dispatch<React.SetStateAction<string>>;
+  setPlanRight?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export function useChatSubmission({
@@ -23,18 +28,71 @@ export function useChatSubmission({
   setMessagesLeft,
   setMessagesRight,
   setIsLoading,
-  hasVoted = false
+  hasVoted = false,
+  setPlanLeft,
+  setPlanRight,
 }: UseChatSubmissionProps) {
   const [input, setInput] = useState<string>('');
   const router = useRouter();
 
   // 移除了來自 URL 的初始訊息處理邏輯，現在由 ChatClient 直接處理
 
-  const handleSubmit = async () => {
+  const handleSubmitWithMessage = useCallback(async (messageText: string) => {
+    if (!messageText.trim()) return;
+
+    setInput('');
+    setIsLoading(true);
+
+    const newUserMessage: Message = { role: 'user', content: messageText };
+    const loadingMessage: Message = { role: 'assistant', content: '思考中...' };
+
+    setMessagesLeft(prev => [...prev, newUserMessage, loadingMessage]);
+    setMessagesRight(prev => [...prev, newUserMessage, loadingMessage]);
+    // 重置規劃/思考內容
+    setPlanLeft?.('');
+    setPlanRight?.('');
+
+    try {
+      await fetchChatResponse(threadId, messageText, {
+        onHistoryLoaded: (left, right) => {
+          if (left.length > 0 || right.length > 0) {
+            setMessagesLeft([...mapApiMessagesToClientMessages(left), newUserMessage, loadingMessage]);
+            setMessagesRight([...mapApiMessagesToClientMessages(right), newUserMessage, loadingMessage]);
+          }
+        },
+        onModel1Update: (content) => {
+          setMessagesLeft(prev => [
+            ...prev.slice(0, -1),
+            { role: 'assistant', content }
+          ]);
+        },
+        onModel2Update: (content) => {
+          setMessagesRight(prev => [
+            ...prev.slice(0, -1),
+            { role: 'assistant', content }
+          ]);
+        },
+        // 規劃/思考串流（左右模型）
+        onModel1PlanUpdate: (plan) => setPlanLeft?.(plan),
+        onModel2PlanUpdate: (plan) => setPlanRight?.(plan),
+        onComplete: () => {
+          setIsLoading(false);
+        }
+      });
+    } catch (error) {
+      logger.error("Error fetching chat response:", error);
+      const errorMessage = { role: 'assistant' as const, content: '請求處理時發生錯誤' };
+      setMessagesLeft(prev => [...prev.slice(0, -1), errorMessage]);
+      setMessagesRight(prev => [...prev.slice(0, -1), errorMessage]);
+      setIsLoading(false);
+    }
+  }, [setInput, setIsLoading, threadId, setMessagesLeft, setMessagesRight, setPlanLeft, setPlanRight]);
+
+  const handleSubmit = useCallback(async () => {
     // 如果已投票，創建新對話而不是在當前 thread 中繼續
     if (hasVoted && input.trim()) {
       try {
-        console.log('[Client] Creating new conversation after voting');
+        logger.info('Creating new conversation after voting');
 
         const config = {
           question: input.trim(),
@@ -53,7 +111,7 @@ export function useChatSubmission({
         router.push(`/chat/${newThreadId}`);
 
       } catch (error) {
-        console.error('[Client] Failed to create new conversation:', error);
+        logger.error('Failed to create new conversation:', error);
         // 如果創建新對話失敗，回退到在當前 thread 中繼續
         await handleSubmitWithMessage(input);
       }
@@ -61,52 +119,7 @@ export function useChatSubmission({
       // 未投票或空輸入，在當前 thread 中繼續
       await handleSubmitWithMessage(input);
     }
-  };
-
-  const handleSubmitWithMessage = async (messageText: string) => {
-    if (!messageText.trim()) return;
-
-    setInput('');
-    setIsLoading(true);
-
-    const newUserMessage: Message = { role: 'user', content: messageText };
-    const loadingMessage: Message = { role: 'assistant', content: '思考中...' };
-
-    setMessagesLeft(prev => [...prev, newUserMessage, loadingMessage]);
-    setMessagesRight(prev => [...prev, newUserMessage, loadingMessage]);
-
-    try {
-      await fetchChatResponse(threadId, messageText, {
-        onHistoryLoaded: (left, right) => {
-          if (left.length > 0 || right.length > 0) {
-            setMessagesLeft([...left.map(msg => ({ role: msg.role as 'user' | 'assistant', content: msg.content })), newUserMessage, loadingMessage]);
-            setMessagesRight([...right.map(msg => ({ role: msg.role as 'user' | 'assistant', content: msg.content })), newUserMessage, loadingMessage]);
-          }
-        },
-        onModel1Update: (content) => {
-          setMessagesLeft(prev => [
-            ...prev.slice(0, -1),
-            { role: 'assistant', content }
-          ]);
-        },
-        onModel2Update: (content) => {
-          setMessagesRight(prev => [
-            ...prev.slice(0, -1),
-            { role: 'assistant', content }
-          ]);
-        },
-        onComplete: () => {
-          setIsLoading(false);
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching chat response:", error);
-      const errorMessage = { role: 'assistant' as const, content: '請求處理時發生錯誤' };
-      setMessagesLeft(prev => [...prev.slice(0, -1), errorMessage]);
-      setMessagesRight(prev => [...prev.slice(0, -1), errorMessage]);
-      setIsLoading(false);
-    }
-  };
+  }, [hasVoted, input, threadId, router, handleSubmitWithMessage]);
 
   return {
     input,

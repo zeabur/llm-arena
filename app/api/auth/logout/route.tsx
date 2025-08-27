@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   return new Response(null, {
     status: 302,
@@ -16,7 +18,8 @@ export async function POST() {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
-      'Set-Cookie': 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT'
+      'Set-Cookie': 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+      'Cache-Control': 'no-store'
     }
   });
 }

@@ -16,6 +16,9 @@ const eslintConfig = [
     plugins: {
       'unused-imports': unusedImports
     },
+    settings: {
+      'import/core-modules': ['server-only']
+    },
 
     rules: {
       '@typescript-eslint/no-unused-vars': [

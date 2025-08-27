@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { toPng } from 'html-to-image';
+import logger from '@/lib/logger';
 
 export const useScreenshot = () => {
   const [loading, setLoading] = useState(false);
@@ -16,11 +17,16 @@ export const useScreenshot = () => {
     setError(null);
 
     try {
+      // 檢測是否為手機版 (寬度小於 768px)
+      const isMobile = window.innerWidth < 768;
+      // 手機版使用固定寬度 600px，桌面版使用原本的 scrollWidth
+      const targetWidth = isMobile ? 600 : element.scrollWidth;
+
       const options = {
         // Use device pixel ratio for better quality on high-res screens (mobile)
         pixelRatio: window.devicePixelRatio || 2,
-        // Ensure all content is captured by using scroll dimensions
-        width: element.scrollWidth,
+        // 手機版使用固定寬度，桌面版使用 scroll dimensions
+        width: targetWidth,
         height: element.scrollHeight,
         // A fix for some images not loading
         cacheBust: true,
@@ -32,7 +38,7 @@ export const useScreenshot = () => {
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
-      console.error('Screenshot failed:', err);
+      logger.error('Screenshot failed:', err);
       throw err; // Re-throw to be caught in the component
     } finally {
       setLoading(false);

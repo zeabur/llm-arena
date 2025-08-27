@@ -1,3 +1,4 @@
+import 'server-only';
 import {ObjectId} from "mongodb";
 import jwt from "jsonwebtoken";
 

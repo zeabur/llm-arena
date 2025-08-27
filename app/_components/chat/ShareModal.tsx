@@ -1,6 +1,7 @@
 "use client";
 import { Download } from "lucide-react";
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import logger from "@/lib/logger";
 import { useScreenshot } from "./hooks/useScreenshot";
 import { generateShareContent } from "./utils/shareContentGenerator";
 import { useChatContext } from "./ChatClient/context/ChatContext";
@@ -14,9 +15,22 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
   const { loading, error, takeScreenshot } = useScreenshot();
   const { messagesLeft } = useChatContext();
   const elementRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Get the original question from the first user message
   const originalQuestion = messagesLeft.find(msg => msg.role === 'user')?.content || '';
+
+  // 檢測螢幕寬度
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleDownload = async () => {
     if (!elementRef.current) return;
@@ -29,7 +43,7 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
       link.click();
       onClose();
     } catch (err) {
-      console.error('Screenshot failed:', err);
+      logger.error('Screenshot failed:', err);
     }
   };
 
@@ -56,11 +70,12 @@ export const ShareModal = ({ isOpen, onClose }: ShareModalProps) => {
         <div className="max-h-[60vh] overflow-y-auto mb-6 border rounded-lg p-2">
           <div
             ref={elementRef}
-            className="bg-[#F4F9FF] p-4 w-full min-w-[320px]"
+            className="bg-[#F4F9FF] p-4 w-full min-w-[320px] md:min-w-full"
             id="share-card-preview"
-            style={{ 
-              minWidth: '100%',
-              width: 'auto'
+            style={{
+              // 手機版固定寬度 600px，桌面版使用 100%
+              width: isMobile ? '600px' : '100%',
+              minWidth: isMobile ? '600px' : '100%'
             }}
             dangerouslySetInnerHTML={{
               __html: generateShareContent(originalQuestion)

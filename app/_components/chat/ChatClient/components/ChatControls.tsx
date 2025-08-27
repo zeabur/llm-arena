@@ -15,16 +15,18 @@ export default function ChatControls({
   setInput,
   onSubmit,
   disabled,
-  hasVoted
+  hasVoted,
 }: ChatControlsProps) {
   return (
-    <InputBox
-      placeholder={hasVoted ? "開始新的一輪對話 - 輸入你的問題..." : "點一下回覆的評價按鈕就能開啟新的對話！"}
-      value={input}
-      onChange={(e) => setInput(e.target.value)}
-      onSubmit={onSubmit}
-      disabled={disabled}
-      hasVoted={hasVoted}
-    />
+    <div className="space-y-2">
+      <InputBox
+        placeholder={hasVoted ? "開始新的一輪對話 - 輸入你的問題..." : "點一下回覆的評價按鈕就能開啟新的對話！"}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onSubmit={onSubmit}
+        disabled={disabled}
+        hasVoted={hasVoted}
+      />
+    </div>
   );
 }

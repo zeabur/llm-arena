@@ -58,25 +58,11 @@ export default function Header() {
                 <img src="/icons/nav/chat.svg" alt="Chat" width={20} height={20} />
                 <span>AI對話</span>
               </Link>
-              <Link
-                href="/game"
-                className={`flex items-center space-x-2 px-3 py-1 ${isActive('/game') ? 'text-blue-500 bg-blue-50 rounded-md' : 'text-gray-600 hover:text-blue-500'}`}
-              >
-                <img src="/icons/nav/game.svg" alt="Game" width={20} height={20} />
-                <span>AI遊戲</span>
-              </Link>
-              <Link
-                href="/hot"
-                className={`flex items-center space-x-2 px-3 py-1 ${isActive('/hot') ? 'text-blue-500 bg-blue-50 rounded-md' : 'text-gray-600 hover:text-blue-500'}`}
-              >
-                <img src="/icons/nav/fire.svg" alt="Fire" width={20} height={20} />
-                <span>熱門探索</span>
-              </Link>
             </nav>
           </div>
           <div className="flex items-center space-x-4">
             <UserDropdown isDesktop={true} />
-            <Link href="/daily-topic" className="bg-blue-500 text-white px-4 py-2 rounded-3xl hover:bg-blue-600 transition-colors flex items-center space-x-2">
+            <Link href="/daily-topic" className="hidden bg-blue-500 text-white px-4 py-2 rounded-3xl hover:bg-blue-600 transition-colors flex items-center space-x-2">
               <img src="/icons/nav/bulb-white.svg" alt="Bulb" width={18} height={18} />
               <span>每日主題</span>
             </Link>
@@ -113,7 +99,7 @@ export default function Header() {
 
           <div className="flex items-center space-x-2">
             <UserDropdown isDesktop={false} onOpen={() => setIsMenuOpen(false)} />
-            <Link href="/daily-topic" className="focus:outline-none">
+            <Link href="/daily-topic" className="hidden focus:outline-none">
               <div className="w-10 h-10 rounded-lg bg-blue-500 flex items-center justify-center">
                 <img src="/icons/nav/bulb-white.svg" alt="Bulb" width={20} height={20} />
               </div>
@@ -134,7 +120,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/game"
-                  className={`flex items-center space-x-3 py-2 px-3 mx-2 ${isActive('/game') ? 'text-blue-500 bg-blue-50 rounded-xl' : 'text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-xl'}`}
+                  className={`hidden items-center space-x-3 py-2 px-3 mx-2 ${isActive('/game') ? 'text-blue-500 bg-blue-50 rounded-xl' : 'text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-xl'}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <img src="/icons/nav/game.svg" alt="Game" width={18} height={18} />
@@ -142,7 +128,7 @@ export default function Header() {
                 </Link>
                 <Link
                   href="/hot"
-                  className={`flex items-center space-x-3 py-2 px-3 mx-2 ${isActive('/hot') ? 'text-blue-500 bg-blue-50 rounded-xl' : 'text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-xl'}`}
+                  className={`hidden items-center space-x-3 py-2 px-3 mx-2 ${isActive('/hot') ? 'text-blue-500 bg-blue-50 rounded-xl' : 'text-gray-700 hover:text-blue-500 hover:bg-gray-50 rounded-xl'}`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <img src="/icons/nav/fire.svg" alt="Fire" width={18} height={18} />

@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   if (!process.env.OAUTH_CALLBACK_URL) {
     throw new Error('OAUTH_CALLBACK_URL is not set');

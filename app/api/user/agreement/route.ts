@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ObjectId } from 'mongodb';
 import { verifyToken } from '@/lib/jwt';
-import getMongoClient from '@/lib/mongo';
+import { getDb } from '@/lib/mongo';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,8 +18,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const mongo = await getMongoClient();
-    const users = mongo.db('arena').collection('users');
+    const db = await getDb('arena');
+    const users = db.collection('users');
     const userObjectId = new ObjectId(userID);
 
     const result = await users.updateOne(

@@ -2,6 +2,7 @@
 
 import { VoteButton } from '../../VoteButton';
 import { useChatContext } from '../context/ChatContext';
+import { VoteLabels } from '../utils/vote';
 
 interface VotingSectionProps {
   onVoteSelect: (text: string) => void;
@@ -13,47 +14,47 @@ export default function VotingSection({ onVoteSelect }: VotingSectionProps) {
   return (
     <>
       {/* Voting buttons - 1號 and 2號 */}
-      <div className="flex justify-center gap-4 w-full max-w-[1024px] mt-6">
+      <div className="flex flex-col sm:flex-row justify-center gap-4 w-full max-w-[1024px] mt-6">
         <VoteButton
           icon="/icons/chat/thumb-left.svg"
           alt="Thumb Left"
-          text="1號比較讚"
+          text={VoteLabels.aBetter}
           className="flex-1"
-          isActive={selectedVote === "1號比較讚"}
-          onClick={() => onVoteSelect("1號比較讚")}
+          isActive={selectedVote === VoteLabels.aBetter}
+          onClick={() => onVoteSelect(VoteLabels.aBetter)}
         />
         <VoteButton
           icon="/icons/chat/thumb-right.svg"
           alt="Thumb Right"
-          text="2號比較讚"
+          text={VoteLabels.bBetter}
           className="flex-1"
-          isActive={selectedVote === "2號比較讚"}
-          onClick={() => onVoteSelect("2號比較讚")}
+          isActive={selectedVote === VoteLabels.bBetter}
+          onClick={() => onVoteSelect(VoteLabels.bBetter)}
         />
       </div>
 
       {/* Additional voting options - 3 buttons */}
-      <div className="grid grid-cols-3 gap-4 w-full max-w-[1024px] mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-[1024px] mt-4">
         <VoteButton
           icon="/icons/chat/tie.svg"
           alt="Tie"
-          text="平手"
-          isActive={selectedVote === "平手"}
-          onClick={() => onVoteSelect("平手")}
+          text={VoteLabels.tie}
+          isActive={selectedVote === VoteLabels.tie}
+          onClick={() => onVoteSelect(VoteLabels.tie)}
         />
         <VoteButton
           icon="/icons/chat/badface.svg"
           alt="Both Bad"
-          text="兩邊都很爛"
-          isActive={selectedVote === "兩邊都很爛"}
-          onClick={() => onVoteSelect("兩邊都很爛")}
+          text={VoteLabels.bothBad}
+          isActive={selectedVote === VoteLabels.bothBad}
+          onClick={() => onVoteSelect(VoteLabels.bothBad)}
         />
         <VoteButton
           icon="/icons/chat/write.svg"
           alt="Provide Answer"
-          text="我來回答"
-          isActive={selectedVote === "我來回答"}
-          onClick={() => onVoteSelect("我來回答")}
+          text={VoteLabels.iWillAnswer}
+          isActive={selectedVote === VoteLabels.iWillAnswer}
+          onClick={() => onVoteSelect(VoteLabels.iWillAnswer)}
         />
       </div>
     </>
