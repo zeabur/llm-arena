@@ -5,8 +5,8 @@ jest.mock('next/server', () => ({
   },
 }));
 
-import { getDb } from '../../lib/mongo';
 import { ObjectId } from 'mongodb';
+import { getDb } from '../../lib/mongo';
 
 describe('/api/chat/history', () => {
   const threads = { findOne: jest.fn() };
@@ -33,5 +33,3 @@ describe('/api/chat/history', () => {
     expect(data.messagesLeft.length).toBe(1);
   });
 });
-
-

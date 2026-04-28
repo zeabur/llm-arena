@@ -4,6 +4,7 @@ import { UserContext } from '../../app/contexts/UserContext';
 
 function ShowUsername() {
   const user = React.useContext(UserContext);
+
   return <div data-testid="name">{user?.username || 'N/A'}</div>;
 }
 
@@ -18,5 +19,3 @@ describe('UserContext', () => {
     expect(screen.getByTestId('name').textContent).toBe('alice');
   });
 });
-
-

@@ -50,5 +50,3 @@ describe('lib/mongo - singleton', () => {
     });
   });
 });
-
-

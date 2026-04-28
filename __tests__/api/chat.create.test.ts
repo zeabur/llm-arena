@@ -60,5 +60,3 @@ describe('/api/chat/create POST', () => {
     expect(insertOne).toHaveBeenCalledTimes(1);
   });
 });
-
-

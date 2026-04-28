@@ -22,11 +22,13 @@ async function collectStreamText(res: any): Promise<string> {
   const reader = (res as any).body.getReader();
   const decoder = new TextDecoder();
   let out = '';
+
   while (true) {
     const { value, done } = await reader.read();
     if (done) break;
     out += decoder.decode(value, { stream: true });
   }
+
   return out;
 }
 
@@ -81,5 +83,3 @@ describe('/api/chat stream', () => {
     expect(appendThreadMessage).toHaveBeenCalled();
   });
 });
-
-

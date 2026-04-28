@@ -52,5 +52,3 @@ describe('useVoting', () => {
     expect(onShow).toHaveBeenCalled();
   });
 });
-
-

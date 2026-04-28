@@ -14,5 +14,3 @@ describe('/api/hot-topics', () => {
     expect(Array.isArray(data.data)).toBe(true);
   });
 });
-
-

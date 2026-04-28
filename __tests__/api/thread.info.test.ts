@@ -46,5 +46,3 @@ describe('/api/thread/info', () => {
     expect(data.threadId).toBe(thread._id.toHexString());
   });
 });
-
-

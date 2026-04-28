@@ -4,6 +4,7 @@ import { ChatProvider, useChatContext } from '../../app/_components/chat/ChatCli
 
 function ShowThread() {
   const ctx = useChatContext();
+
   return <div data-testid="tid">{ctx.threadId}</div>;
 }
 
@@ -24,5 +25,3 @@ describe('ChatContext', () => {
     expect(screen.getByTestId('tid').textContent).toBe('t1');
   });
 });
-
-

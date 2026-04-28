@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook, act } from '@testing-library/react';
 
 jest.mock('next/navigation', () => ({
@@ -53,5 +52,3 @@ describe('useChatSubmission', () => {
     expect(fetchChatResponse).toHaveBeenCalled();
   });
 });
-
-

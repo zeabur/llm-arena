@@ -14,5 +14,3 @@ describe('lib/utils - cn', () => {
     expect(cn('base', { active: true, disabled: false })).toBe('base active');
   });
 });
-
-

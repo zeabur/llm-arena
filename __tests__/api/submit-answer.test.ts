@@ -48,5 +48,3 @@ describe('/api/submit-answer', () => {
     expect(threads.updateOne).toHaveBeenCalled();
   });
 });
-
-

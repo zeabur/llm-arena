@@ -26,5 +26,3 @@ describe('VoteButton', () => {
     expect(getByText('Active')).toBeInTheDocument();
   });
 });
-
-

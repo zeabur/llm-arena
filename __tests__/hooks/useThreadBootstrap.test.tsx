@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import { render, waitFor } from '@testing-library/react';
-
 import { useThreadBootstrap } from '../../app/_components/chat/ChatClient/hooks/useThreadBootstrap';
 
 function TestComponent({
@@ -19,6 +18,7 @@ function TestComponent({
 
   const setMessagesLeft = jest.fn();
   const setMessagesRight = jest.fn();
+
   const handleSubmitWithMessage = (msg: string) => {
     onSubmitMessage?.(msg);
   };
@@ -31,6 +31,7 @@ function TestComponent({
         json: async () => ({ messagesLeft: history.left, messagesRight: history.right }),
       } as any;
     }
+
     if (url.includes('/api/thread/info')) {
       return {
         ok: threadInfo ? true : false,
@@ -98,5 +99,3 @@ describe('useThreadBootstrap', () => {
     });
   });
 });
-
-

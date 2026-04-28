@@ -46,9 +46,11 @@ describe('ChatClient', () => {
       if (url.includes('/api/chat/history')) {
         return { ok: true, json: async () => ({ messagesLeft: [], messagesRight: [] }) } as any;
       }
+
       if (url.includes('/api/thread/info')) {
         return { ok: false, status: 404 } as any;
       }
+
       return { ok: true, json: async () => ({}) } as any;
     });
 
@@ -63,5 +65,3 @@ describe('ChatClient', () => {
     });
   });
 });
-
-

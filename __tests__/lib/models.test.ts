@@ -1,7 +1,6 @@
 /**
  * @jest-environment node
  */
-import { ObjectId } from 'mongodb';
 
 // Mock the mongo module
 jest.mock('../../lib/mongo', () => ({
@@ -17,15 +16,15 @@ describe('Models Service', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockCollection = {
       find: jest.fn(),
     };
-    
+
     mockDb = {
       collection: jest.fn().mockReturnValue(mockCollection),
     };
-    
+
     (getDb as jest.Mock).mockResolvedValue(mockDb);
   });
 

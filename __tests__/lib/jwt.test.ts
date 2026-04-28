@@ -32,5 +32,3 @@ describe('lib/jwt', () => {
     expect(objectId.toHexString()).toBe('507f1f77bcf86cd799439011');
   });
 });
-
-

@@ -9,7 +9,7 @@ global.TextDecoder = TextDecoder
 
 // Polyfill Web Streams API used by Next route handlers
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
   const web = require('stream/web')
   // @ts-ignore
   global.TransformStream = web.TransformStream

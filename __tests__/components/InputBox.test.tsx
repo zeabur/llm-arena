@@ -28,5 +28,3 @@ describe('InputBox', () => {
     expect(onSubmit).toHaveBeenCalled();
   });
 });
-
-

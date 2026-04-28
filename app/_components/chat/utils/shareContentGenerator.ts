@@ -76,9 +76,11 @@ const cloneAndCleanContent = (container: HTMLElement): string => {
   // 查找所有思考過程容器，檢查是否有收合狀態的內容
   cloned.querySelectorAll('.bg-gray-50.border.border-gray-200.rounded-md').forEach(thinkingBlock => {
     const thinkingContent = thinkingBlock.querySelector('[id^="plan-"]');
+
     // 如果思考過程內容不存在（被收合），則移除整個思考過程區塊
     if (!thinkingContent) {
       const parentDiv = thinkingBlock.parentElement;
+
       if (parentDiv && parentDiv.classList.contains('mb-4')) {
         parentDiv.remove();
       } else {

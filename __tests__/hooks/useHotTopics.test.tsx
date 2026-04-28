@@ -27,5 +27,3 @@ describe('useHotTopics', () => {
     expect(result.current.error).toBe('e');
   });
 });
-
-

@@ -19,5 +19,3 @@ describe('useChatMessages', () => {
     expect(result.current.isLoading).toBe(true);
   });
 });
-
-
