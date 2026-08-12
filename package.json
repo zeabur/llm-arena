@@ -82,7 +82,7 @@
     "eslint-config-next": "16.2.7",
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
-    "postcss": "^8.5.14",
+    "postcss": "^8.5.23",
     "ts-jest": "^29.4.9",
     "typescript": "^5"
   }
